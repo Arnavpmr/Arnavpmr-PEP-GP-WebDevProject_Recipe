@@ -8,12 +8,16 @@ const BASE_URL = "http://localhost:8081"; // backend URL
  * TODO: Get references to various DOM elements
  * - usernameInput, emailInput, passwordInput, repeatPasswordInput, registerButton
  */
-
+const usernameInput = document.getElementById("username-input");
+const emailInput = document.getElementById("email-input");
+const passwordInput = document.getElementById("password-input");
+const repeatPasswordInput = document.getElementById("repeat-password-input");
+const registerButton = document.getElementById("register-button");
 
 /* 
  * TODO: Ensure the register button calls processRegistration when clicked
  */
-
+registerButton.addEventListener("click", processRegistration);
 
 /**
  * TODO: Process Registration Function
@@ -40,22 +44,45 @@ const BASE_URL = "http://localhost:8081"; // backend URL
  */
 async function processRegistration() {
     // Implement registration logic here
+    const username = usernameInput.value.trim();
+    const password = passwordInput.value;
+    const repeatPassword = repeatPasswordInput.value;
 
-    // Example placeholder:
-    // const registerBody = { username, email, password };
-const requestOptions = {
+    if (!username || !password || !repeatPassword) {
+        alert("Please fill in all fields.");
+        return;
+    }
+
+    if (password !== repeatPassword) {
+        alert("Passwords do not match.");
+        return;
+    }
+
+    const registerBody = {
+        username: username,
+        password: password
+    };
+
+    const requestOptions = {
         method: "POST",
-        mode: "cors",
-        cache: "no-cache",
-        credentials: "same-origin",
         headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Headers": "*"
+            "Content-Type": "application/json"
         },
-        redirect: "follow",
-        referrerPolicy: "no-referrer",
         body: JSON.stringify(registerBody)
     };
-    // await fetch(...)
+
+    try {
+        const response = await fetch(`${BASE_URL}/register`, requestOptions);
+
+        if (response.status === 201) {
+            window.location.href = "../login/login-page.html";
+        } else if (response.status === 409) {
+            alert("Username or email already exists.");
+        } else {
+            alert("Registration failed. Please try again.");
+        }
+    } catch (error) {
+        console.error("Registration error:", error);
+        alert("An unexpected error occurred during registration.");
+    }
 }

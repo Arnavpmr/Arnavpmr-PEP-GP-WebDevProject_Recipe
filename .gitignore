@@ -44,3 +44,7 @@ replay_pid*
 
 #H2
 **/h2/**
+
+#Misc Files
+driver/msedgedriver
+microsoft-edge-stable_123.0.2420.97-1_amd64.deb
